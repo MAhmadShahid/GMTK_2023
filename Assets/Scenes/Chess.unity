@@ -319,7 +319,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f76964836bea29646afc26c508398489, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _tileMaterial: {fileID: 10303, guid: 0000000000000000f000000000000000, type: 0}
+  _tileMaterial: {fileID: 2100000, guid: a804077385514d042bea7e30b214006e, type: 2}
   _hoverMaterial: {fileID: 2100000, guid: 06f0b4f65e4bde04e828677a0834cac8, type: 2}
   tileSize: 1
   yOffSet: 0.2
@@ -342,7 +342,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 934488346}
   m_LocalRotation: {x: -0.41345647, y: 0.5735505, z: -0.413205, w: -0.57389474}
-  m_LocalPosition: {x: 3.1643946, y: 7.0600653, z: 0.11139669}
+  m_LocalPosition: {x: 3.1643946, y: 8.12, z: 0.11139669}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
