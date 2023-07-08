@@ -321,6 +321,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _tileMaterial: {fileID: 2100000, guid: a804077385514d042bea7e30b214006e, type: 2}
   _hoverMaterial: {fileID: 2100000, guid: 06f0b4f65e4bde04e828677a0834cac8, type: 2}
+  _highlightMaterial: {fileID: 2100000, guid: 628413cc2fb7ddb4787e5ab85b43ba14, type: 2}
   tileSize: 1
   yOffSet: 0
   boardCenter: {x: 0, y: 0, z: 0}
