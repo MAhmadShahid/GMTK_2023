@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 705507994}
-  m_IndirectSpecularColor: {r: 0.18028334, g: 0.22571328, b: 0.3069217, a: 1}
+  m_IndirectSpecularColor: {r: 0.18028378, g: 0.22571412, b: 0.30692285, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -140,11 +140,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4000012986792146, guid: 857381d11efac0a4d91a3b3b8b94a827, type: 3}
       propertyPath: m_LocalScale.x
-      value: 17.2
+      value: 16.3
       objectReference: {fileID: 0}
     - target: {fileID: 4000012986792146, guid: 857381d11efac0a4d91a3b3b8b94a827, type: 3}
       propertyPath: m_LocalScale.y
-      value: 17.2
+      value: 16.5
       objectReference: {fileID: 0}
     - target: {fileID: 4000012986792146, guid: 857381d11efac0a4d91a3b3b8b94a827, type: 3}
       propertyPath: m_LocalScale.z
@@ -152,15 +152,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4000012986792146, guid: 857381d11efac0a4d91a3b3b8b94a827, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0.04
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4000012986792146, guid: 857381d11efac0a4d91a3b3b8b94a827, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 7.41
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4000012986792146, guid: 857381d11efac0a4d91a3b3b8b94a827, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0.09
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4000012986792146, guid: 857381d11efac0a4d91a3b3b8b94a827, type: 3}
       propertyPath: m_LocalRotation.w
@@ -192,7 +192,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4000012986792146, guid: 857381d11efac0a4d91a3b3b8b94a827, type: 3}
       propertyPath: m_ConstrainProportionsScale
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 857381d11efac0a4d91a3b3b8b94a827, type: 3}
@@ -322,8 +322,11 @@ MonoBehaviour:
   _tileMaterial: {fileID: 2100000, guid: a804077385514d042bea7e30b214006e, type: 2}
   _hoverMaterial: {fileID: 2100000, guid: 06f0b4f65e4bde04e828677a0834cac8, type: 2}
   tileSize: 1
-  yOffSet: 0.2
+  yOffSet: 0
   boardCenter: {x: 0, y: 0, z: 0}
+  deathScale: 15
+  deathSpacing: 0.5
+  dragOffset: 1
   prefabs:
   - {fileID: 8923216676111469524, guid: 43fdcc1747e9d2544b0fe92d65ea187d, type: 3}
   - {fileID: 6058263924430973383, guid: 0ee127538377d0744a26e6bd2a73b5ad, type: 3}
@@ -342,7 +345,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 934488346}
   m_LocalRotation: {x: -0.41345647, y: 0.5735505, z: -0.413205, w: -0.57389474}
-  m_LocalPosition: {x: 3.1643946, y: 8.12, z: 0.11139669}
+  m_LocalPosition: {x: 0, y: 0.001, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -425,8 +428,8 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 963194225}
-  m_LocalRotation: {x: 0.39072037, y: -0.0068245027, z: 0.0028901875, w: 0.9204796}
-  m_LocalPosition: {x: -0.64, y: 12.8, z: -5.7}
+  m_LocalRotation: {x: 0.3726353, y: -0.0009453965, z: -0.0032408135, w: 0.9279718}
+  m_LocalPosition: {x: 0.27202955, y: 6.563628, z: -6.7185383}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
