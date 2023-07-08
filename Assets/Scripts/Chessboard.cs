@@ -76,37 +76,24 @@ public class Chessboard : MonoBehaviour
             }
 
             // If we were already hovering a tile, change the previous one
-            if (_currentHover != hitPosition && !currentlyDragging)
-            {
-                //if (!ContainsValidMove(ref availableMoves, _currentHover))
-                //{
-                _tiles[_currentHover.x, _currentHover.y].layer = LayerMask.NameToLayer("Tile");
-                _tiles[_currentHover.x, _currentHover.y].GetComponent<MeshRenderer>().material = _tileMaterial;
-                //}
-                //else
-                //{
-                //    _tiles[_currentHover.x, _currentHover.y].layer = LayerMask.NameToLayer("Highlight");
-                //    _tiles[_currentHover.x, _currentHover.y].GetComponent<MeshRenderer>().material = _highlightMaterial;
-                //}
-
-                _currentHover = hitPosition;
-                _tiles[hitPosition.x, hitPosition.y].layer = LayerMask.NameToLayer("Hover");
-                _tiles[hitPosition.x, hitPosition.y].GetComponent<MeshRenderer>().material = _hoverMaterial;
-            }
-
-            if(currentlyDragging && _currentHover != hitPosition)
+            if (_currentHover != hitPosition)
             {
                 if (!ContainsValidMove(ref availableMoves, _currentHover))
                 {
                     _tiles[_currentHover.x, _currentHover.y].layer = LayerMask.NameToLayer("Tile");
                     _tiles[_currentHover.x, _currentHover.y].GetComponent<MeshRenderer>().material = _tileMaterial;
                 }
-                else
+                else// if(ContainsValidMove(ref availableMoves, _currentHover) && Input.GetMouseButtonDown(0))
                 {
                     _tiles[_currentHover.x, _currentHover.y].layer = LayerMask.NameToLayer("Highlight");
                     _tiles[_currentHover.x, _currentHover.y].GetComponent<MeshRenderer>().material = _highlightMaterial;
                 }
+
+                _currentHover = hitPosition;
+                _tiles[hitPosition.x, hitPosition.y].layer = LayerMask.NameToLayer("Hover");
+                _tiles[hitPosition.x, hitPosition.y].GetComponent<MeshRenderer>().material = _hoverMaterial;
             }
+
 
             // on mouse button pressed
             if(Input.GetMouseButtonDown(0)) 
@@ -307,6 +294,8 @@ public class Chessboard : MonoBehaviour
             _tiles[availableMoves[i].x, availableMoves[i].y].layer = LayerMask.NameToLayer("Tile");
             _tiles[availableMoves[i].x, availableMoves[i].y].GetComponent<MeshRenderer>().material = _tileMaterial;
         }
+
+        availableMoves.Clear();
     }
 
     // Operations
