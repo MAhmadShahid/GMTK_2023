@@ -4,6 +4,9 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 
+public enum SpecialMove {
+    None = 0
+}
 public class Chessboard : MonoBehaviour
 {
 
@@ -28,6 +31,7 @@ public class Chessboard : MonoBehaviour
     private const int TILE_COUNT_X = 8;
     private const int TILE_COUNT_Y = 8;
 
+    private List<Vector2Int[]> moveList = new List<Vector2Int[]>();
     private GameObject[,] _tiles;
     private ChessPiece[,] chessPieces;
     private List<ChessPiece> deadWhites = new List<ChessPiece>();
