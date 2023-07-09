@@ -780,6 +780,8 @@ public class Chessboard : MonoBehaviour
     public void RotateCamera()
     {
         turnCam[currentCam].SetActive(false);
-        turnCam[(++currentCam) % 2].SetActive(true);
+        turnCam[(currentCam + 1) % 2].SetActive(true);
+
+        currentCam = (currentCam + 1) % 2;
     }
 }
