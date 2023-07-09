@@ -101,6 +101,9 @@ using System;
 using Debug = UnityEngine.Debug;
 using System.Threading.Tasks;
 using System.Runtime.CompilerServices;
+using UnityEngine.Windows;
+using System.IO;
+using Directory = System.IO.Directory;
 
 public class StockfishAI : MonoBehaviour
 {
@@ -125,7 +128,7 @@ public class StockfishAI : MonoBehaviour
     private void StartStockfish()
     {
         stockfishProcess = new Process();
-        stockfishProcess.StartInfo.FileName = Application.dataPath + "/Stockfish/stockfish-windows-x86-64-avx2.exe";
+        stockfishProcess.StartInfo.FileName = System.IO.Path.Combine(Directory.GetCurrentDirectory(), "Stockfish", "stockfish-windows-x86-64-avx2.exe");
         stockfishProcess.StartInfo.UseShellExecute = false;
         stockfishProcess.StartInfo.CreateNoWindow = true;
         stockfishProcess.StartInfo.RedirectStandardInput = true;
