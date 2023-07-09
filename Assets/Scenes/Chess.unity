@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 705507994}
-  m_IndirectSpecularColor: {r: 0.18028378, g: 0.22571412, b: 0.30692285, a: 1}
+  m_IndirectSpecularColor: {r: 0.18028355, g: 0.22571374, b: 0.30692255, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -304,6 +304,86 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 857381d11efac0a4d91a3b3b8b94a827, type: 3}
+--- !u!1 &281360020
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 281360022}
+  - component: {fileID: 281360021}
+  m_Layer: 0
+  m_Name: AudioManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &281360021
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 281360020}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b5e9cc3a2758d574b8030f2c97c0a16e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sounds:
+  - name: capture
+    clip: {fileID: 8300000, guid: 07ca006b989742442a3eff6dcb4191e0, type: 3}
+    volume: 1
+    pitch: 1.35
+    loop: 0
+    playOnAwake: 0
+    source: {fileID: 0}
+  - name: castle
+    clip: {fileID: 8300000, guid: 29740cb8a8fe7ef4b88e8d32d17d55c5, type: 3}
+    volume: 1
+    pitch: 1.47
+    loop: 0
+    playOnAwake: 0
+    source: {fileID: 0}
+  - name: move-self
+    clip: {fileID: 8300000, guid: 9ec4546f21f21554ca683abe45027628, type: 3}
+    volume: 1
+    pitch: 1.6
+    loop: 0
+    playOnAwake: 0
+    source: {fileID: 0}
+  - name: move-check
+    clip: {fileID: 8300000, guid: 2fecabe4493252341a06aa8659b68252, type: 3}
+    volume: 1
+    pitch: 1.51
+    loop: 0
+    playOnAwake: 0
+    source: {fileID: 0}
+  - name: theme
+    clip: {fileID: 8300000, guid: a5b0333935ef88e4ba850e5ab2742d97, type: 3}
+    volume: 1
+    pitch: 1.76
+    loop: 1
+    playOnAwake: 1
+    source: {fileID: 0}
+--- !u!4 &281360022
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 281360020}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 7
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &665794142
 GameObject:
   m_ObjectHideFlags: 0
