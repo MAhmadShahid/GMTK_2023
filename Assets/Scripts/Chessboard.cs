@@ -5,10 +5,7 @@ using Unity.VisualScripting;
 using UnityEngine;
 
 public enum SpecialMove {
-    None = 0,
-    Enpassant,
-    Castling,
-    Promotion
+    None = 0
 }
 public class Chessboard : MonoBehaviour
 {
@@ -35,7 +32,6 @@ public class Chessboard : MonoBehaviour
     private const int TILE_COUNT_Y = 8;
 
     private List<Vector2Int[]> moveList = new List<Vector2Int[]>();
-    private SpecialMove specialMove;
     private GameObject[,] _tiles;
     private ChessPiece[,] chessPieces;
     private List<ChessPiece> deadWhites = new List<ChessPiece>();
@@ -45,7 +41,7 @@ public class Chessboard : MonoBehaviour
 
     private bool isWhiteTurn; 
     private Vector3 bounds;
-    
+
 
     // raycast section
     private Camera _currentCamera;
@@ -119,9 +115,6 @@ public class Chessboard : MonoBehaviour
 
                         // get list of allowed tiles we can move to, also highlight them
                         availableMoves = currentlyDragging.GetAvailableMoves(ref chessPieces, TILE_COUNT_X, TILE_COUNT_Y);
-                        //Get a list of special moves 
-                        specialMove = currentlyDragging.GetSpecialMoves(ref chessPieces, ref moveList, ref availableMoves);
-
                         HighlightTiles();
                     }
                 }
@@ -315,38 +308,8 @@ public class Chessboard : MonoBehaviour
 
     // Operations
 
-    //Special Moves 
-    private void ProcessSpecialMove() {
-        if(specialMove == SpecialMove.Enpassant) {
-            var newMove = moveList[moveList.Count - 1];
-            ChessPiece myPawn = chessPieces[newMove[1].x, newMove[1].y];
-            var targetPawnPosition = moveList[moveList.Count - 2];
-            ChessPiece enemePawn = chessPieces[targetPawnPosition[1].x, targetPawnPosition[1].y];
 
-            if(myPawn.currentX == enemePawn.currentX) {
-                if(myPawn.currentY == enemePawn.currentY -1 || myPawn.currentY == enemePawn.currentY + 1) {
-                    if (enemePawn.team == 0) {
-                        deadWhites.Add(enemePawn);
-                        enemePawn.SetScale(Vector3.one * deathScale);
-                        enemePawn.SetPosition(new Vector3(8 * tileSize, yOffSet, -1 * tileSize)
-                            - bounds
-                            + new Vector3(tileSize / 2, 0, tileSize / 2)
-                            + (Vector3.forward * deathSpacing) * deadWhites.Count);
-                    }
-                    else {
-                        deadBlacks.Add(enemePawn);
-                        enemePawn.SetScale(Vector3.one * deathScale);
-                        enemePawn.SetPosition(new Vector3(8 * tileSize, yOffSet, -1 * tileSize)
-                            - bounds
-                            + new Vector3(tileSize / 2, 0, tileSize / 2)
-                            + (Vector3.forward * deathSpacing) * deadBlacks.Count);
-                    }
-                    chessPieces[enemePawn.currentX, enemePawn.currentY] = null;
-                }
-            }
-        }
-    }
-    private bool ContainsValidMove(ref List<Vector2Int> moves, Vector2Int pos)
+    private bool ContainsValidMove(ref List<Vector2Int> moves, Vector2 pos)
     {
         for(int i = 0; i < moves.Count; i++)
             if (moves[i].x == pos.x && moves[i].y == pos.y)
@@ -357,7 +320,7 @@ public class Chessboard : MonoBehaviour
     private bool MoveTo(ChessPiece cp, int x, int y)
     {
 
-        if(!ContainsValidMove(ref availableMoves, new Vector2Int(x, y)))
+        if(!ContainsValidMove(ref availableMoves, new Vector2(x, y)))
             return false;
 
         Vector2Int previousPosition = new Vector2Int(cp.currentX, cp.currentY);
@@ -401,10 +364,7 @@ public class Chessboard : MonoBehaviour
         chessPieces[previousPosition.x, previousPosition.y] = null;
 
         PositionSinglePiece(x, y);
-        
         isWhiteTurn = !isWhiteTurn;
-        moveList.Add(new Vector2Int[] { previousPosition, new Vector2Int(x,y)});
-        ProcessSpecialMove();
         return true;
     }
     private void CheckMate(int team) {
@@ -421,8 +381,7 @@ public class Chessboard : MonoBehaviour
         victoryScreen.SetActive(false);
         //Fields Reset
         currentlyDragging = null;
-        availableMoves.Clear();
-        moveList.Clear();
+        availableMoves = new List<Vector2Int>();
         //Cleanup
         for (int x = 0; x < TILE_COUNT_X; x++)
             for (int y = 0; y < TILE_COUNT_Y; y++) {

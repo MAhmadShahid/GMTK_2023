@@ -21,8 +21,4 @@ public class King : ChessPiece
 
         return returnList;
     }
-    public override SpecialMove GetSpecialMoves(ref ChessPiece[,] board, ref List<Vector2Int[]> moveList, ref List<Vector2Int> availaibleMoves) {
-        SpecialMove r = SpecialMove.None;
-        return r;
-    }
 }
