@@ -65,6 +65,13 @@ public class Chessboard : MonoBehaviour
 
     //UI Section
     [SerializeField] private GameObject victoryScreen;
+    [SerializeField] private UIScript uiScript;
+
+
+    // Cameras
+    [SerializeField] GameObject SceneCam;
+    [SerializeField] GameObject[] turnCam;
+    int currentCam = -1;
 
     private void Awake()
     {
@@ -94,11 +101,11 @@ public class Chessboard : MonoBehaviour
 
         if (!_currentCamera)
         {
-            _currentCamera = Camera.main;
+            _currentCamera = Camera.current;
             return;
         }
 
-        _currentCamera = Camera.main;
+        _currentCamera = Camera.current;
 
         RaycastHit info;
         Ray ray = _currentCamera.ScreenPointToRay(Input.mousePosition);
@@ -735,6 +742,8 @@ public class Chessboard : MonoBehaviour
         CalculateRandomAndResetTurn();
         playerIsWhite = !playerIsWhite;
         playerIsBlack = !playerIsBlack;
+        RotateCamera();
+        uiScript.ReverseUIElements();
     }
 
     public bool TimeToReverseRoles()
@@ -759,5 +768,18 @@ public class Chessboard : MonoBehaviour
     public void UpdateUI()
     {
 
+    }
+
+    public void MoveToMainCameras()
+    {
+        SceneCam.SetActive(false);
+        turnCam[0].SetActive(true);
+        currentCam = 0;
+    }
+
+    public void RotateCamera()
+    {
+        turnCam[currentCam].SetActive(false);
+        turnCam[(++currentCam) % 2].SetActive(true);
     }
 }
