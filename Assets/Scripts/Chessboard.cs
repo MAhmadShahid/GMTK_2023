@@ -43,9 +43,11 @@ public class Chessboard : MonoBehaviour
     private ChessPiece currentlyDragging;
     private List<Vector2Int> availableMoves = new List<Vector2Int>();
 
-    public bool isWhiteTurn;
+    public int random;
+    public int totalTurn = 0;
+    public bool playerIsWhite = true;
     public int playerSide = 0;
-    public bool isBlackTurn;
+    public bool playerIsBlack = false;
     public bool playersTurn = true;
     public bool aiTurnInProcess = false;
     private Vector3 bounds;
@@ -71,15 +73,19 @@ public class Chessboard : MonoBehaviour
         GenerateAllTiles(tileSize, TILE_COUNT_X, TILE_COUNT_Y);
         SpawnAllPieces();
         PositionAllPieces();
+        random = 2;
     }
 
     // Update is called once per frame
     void Update()
     {
 
+        if (TimeToReverseRoles())
+            ReverseRoles();
+
         if (!playersTurn && !aiTurnInProcess)
         {
-            aiScript.PlayAIMove(playerMoveUCI);
+            aiScript.PlayAIMove(playerMoveUCI, false);
             return;
         }
 
@@ -91,6 +97,8 @@ public class Chessboard : MonoBehaviour
             _currentCamera = Camera.main;
             return;
         }
+
+        _currentCamera = Camera.main;
 
         RaycastHit info;
         Ray ray = _currentCamera.ScreenPointToRay(Input.mousePosition);
@@ -135,7 +143,7 @@ public class Chessboard : MonoBehaviour
                 if (chessPieces[hitPosition.x, hitPosition.y] != null)
                 {
                     // Is it our turn?
-                    if ((chessPieces[hitPosition.x, hitPosition.y].team == 0 && playersTurn) || (chessPieces[hitPosition.x, hitPosition.y].team == 1 && !playersTurn))
+                    if ((chessPieces[hitPosition.x, hitPosition.y].team == 0 && playerIsWhite) || (chessPieces[hitPosition.x, hitPosition.y].team == 1 && playerIsBlack))
                     {
                         currentlyDragging = chessPieces[hitPosition.x, hitPosition.y];
 
@@ -155,12 +163,15 @@ public class Chessboard : MonoBehaviour
                 playerMoveUCI = "";
                 Vector2Int previousPosition = new Vector2Int(currentlyDragging.currentX, currentlyDragging.currentY);
 
-                bool validMove = MoveTo(currentlyDragging, hitPosition.x, hitPosition.y, false);
+                bool validMove = MoveTo(currentlyDragging, hitPosition.x, hitPosition.y, false, false);
                 if (!validMove)
                 {
                     currentlyDragging.SetPosition(GetTileCentre(previousPosition.x, previousPosition.y));
                     playerMoveUCI = "";
                 }
+
+                if(previousPosition != new Vector2Int(currentlyDragging.currentX, currentlyDragging.currentY))
+                    totalTurn++;
 
                 playerMoveUCI = "";
                 playerMoveUCI = playerMoveUCI + $"{rowUCI[previousPosition.x]}{previousPosition.y + 1}{rowUCI[hitPosition.x]}{hitPosition.y + 1}";
@@ -550,7 +561,7 @@ public class Chessboard : MonoBehaviour
 
         return false;
     }
-    public bool MoveTo(ChessPiece cp, int x, int y, bool ai)
+    public bool MoveTo(ChessPiece cp, int x, int y, bool ai, bool roleReverse)
     {
 
         if (!ContainsValidMove(ref availableMoves, new Vector2Int(x, y)) && !ai)
@@ -598,7 +609,9 @@ public class Chessboard : MonoBehaviour
 
         PositionSinglePiece(x, y);
 
-        playersTurn = !playersTurn;
+        if(!roleReverse)
+            playersTurn = !playersTurn;
+
         moveList.Add(new Vector2Int[] { previousPosition, new Vector2Int(x, y) });
         ProcessSpecialMove();
         if (CheckForCheckmate())
@@ -717,9 +730,30 @@ public class Chessboard : MonoBehaviour
 
     public void ReverseRoles()
     {
-
+        Debug.Log("Reversing Roles!");
+        aiScript.PlayAIMove("", true);
+        CalculateRandomAndResetTurn();
+        playerIsWhite = !playerIsWhite;
+        playerIsBlack = !playerIsBlack;
     }
 
+    public bool TimeToReverseRoles()
+    {
+        return totalTurn == random;
+    }
+
+    public void CalculateRandomAndResetTurn()
+    {
+        do
+        {
+            random = Random.Range(4, 10);
+        }
+        while (random % 2 != 0);
+
+        totalTurn = -1;
+
+        Debug.Log($"Random: {random}");
+    }
 
 
     public void UpdateUI()

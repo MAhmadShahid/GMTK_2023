@@ -100,6 +100,7 @@ using System.Diagnostics;
 using System;
 using Debug = UnityEngine.Debug;
 using System.Threading.Tasks;
+using System.Runtime.CompilerServices;
 
 public class StockfishAI : MonoBehaviour
 {
@@ -147,7 +148,7 @@ public class StockfishAI : MonoBehaviour
 
     public string BestMove(string playerMoveUCI)
     {
-        command += " " + playerMoveUCI;
+        command += (playerMoveUCI != "" ? (" " + playerMoveUCI) : playerMoveUCI);
         Debug.Log("Player: " + command);
         SendCommand(command);
 
@@ -171,6 +172,12 @@ public class StockfishAI : MonoBehaviour
     {
         return Task.Run(() => BestMove(playerMoveUCI));
     }
+
+    public Task<string> AIBestMoveAsync(string aiMoveUCI)
+    {
+        return Task.Run(() => BestMove(""));
+    }
+
 
     public string BestMove()
     {

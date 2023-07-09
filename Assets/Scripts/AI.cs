@@ -23,17 +23,17 @@ public class AI : MonoBehaviour
 
 
 
-    public async void PlayAIMove(string playersMoveUCI)
+    public async void PlayAIMove(string playersMoveUCI, bool roleReverse)
     {
         chessboard.aiTurnInProcess = true;
         Debug.Log("AI's Turn");
         chessboard.RestrictPlayerToMove();
         string aiMove = await stockfish.BestMoveAsync(playersMoveUCI);
         Debug.Log($"Players Move: {playersMoveUCI}");
-        RecieveAndPerformAIMove(aiMove);
+        RecieveAndPerformAIMove(aiMove, roleReverse);
     }
 
-    public void RecieveAndPerformAIMove(string aiMoveUCI)
+    public void RecieveAndPerformAIMove(string aiMoveUCI, bool roleReverse)
     {
         Debug.Log($"AI Move: {aiMoveUCI}");
         Vector2Int currentlySelectedPiece = new Vector2Int(rowUCI[aiMoveUCI[0]], (int)aiMoveUCI[1] - 1 - 48);
@@ -41,8 +41,9 @@ public class AI : MonoBehaviour
 
         Debug.Log(currentlySelectedPiece.ToString());
         Debug.Log(newPosition.ToString());
-        chessboard.MoveTo(chessboard.chessPieces[currentlySelectedPiece.x, currentlySelectedPiece.y], newPosition.x, newPosition.y, true); ;
+        chessboard.MoveTo(chessboard.chessPieces[currentlySelectedPiece.x, currentlySelectedPiece.y], newPosition.x, newPosition.y, true, roleReverse); ;
         chessboard.AllowPlayerToMove();
+        chessboard.totalTurn++;
         chessboard.aiTurnInProcess = false;
     }
 
