@@ -1,12 +1,112 @@
+//using UnityEngine;
+//using System.Diagnostics;
+//using System;
+//using Debug = UnityEngine.Debug;
+
+//public class StockfishAI : MonoBehaviour
+//{
+//    public event Action<string> OnAIMoveReceived;
+
+//    private Process stockfishProcess;
+
+//    private void Start()
+//    {
+//        StartStockfish();
+//        SendCommand("uci");
+//        SendCommand("isready");
+//        // You can send other necessary commands to initialize the engine here
+//    }
+
+
+//    ~StockfishAI() 
+//    {
+//        StopStockfish();
+//    }
+
+//    private void StartStockfish()
+//    {
+//        stockfishProcess = new Process();
+//        stockfishProcess.StartInfo.FileName = Application.dataPath + "/Stockfish/stockfish-windows-x86-64-avx2.exe";
+//        stockfishProcess.StartInfo.UseShellExecute = false;
+//        stockfishProcess.StartInfo.CreateNoWindow = true;
+//        stockfishProcess.StartInfo.RedirectStandardInput = true;
+//        stockfishProcess.StartInfo.RedirectStandardOutput = true;
+//        stockfishProcess.OutputDataReceived += OnOutputDataReceived;
+//        stockfishProcess.Start();
+//    }
+
+//    private void StopStockfish()
+//    {
+//        if (stockfishProcess != null && !stockfishProcess.HasExited)
+//        {
+//            Debug.Log("Quit");
+//            stockfishProcess.StandardInput.WriteLine("quit");
+//            stockfishProcess.WaitForExit();
+//            stockfishProcess.Close();
+//        }
+//    }
+
+//    private void SendCommand(string command)
+//    {
+//        if (stockfishProcess != null && stockfishProcess.HasExited == false)
+//        {
+//            stockfishProcess.StandardInput.WriteLine(command);
+//            stockfishProcess.StandardInput.Flush();
+//        }
+//    }
+
+//    private void OnOutputDataReceived(object sender, DataReceivedEventArgs e)
+//    {
+//        if (e.Data != null)
+//        {
+//            // Handle the output data received from Stockfish here
+//            Debug.Log("Stockfish: " + e.Data);
+//            ProcessStockfishResponse(e.Data);
+//        }
+//    }
+
+//    private void ProcessStockfishResponse(string response)
+//    {
+//        // Implement logic to parse the response and handle different cases
+//        // For example, you can extract the best move, score, etc.
+
+//        // Example: Parsing the best move
+//        if (response.StartsWith("bestmove"))
+//        {
+//            string[] parts = response.Split(' ');
+//            if (parts.Length >= 2)
+//            {
+//                string bestMove = parts[1];
+//                Debug.Log("Best move: " + bestMove);
+
+//                // Trigger the event and pass the AI's move to subscribers
+//                OnAIMoveReceived?.Invoke(bestMove);
+//            }
+//        }
+//    }
+
+//    // Example method to send a move to Stockfish
+//    public void SendMoveToStockfish(string move)
+//    {
+//        string command = "position startpos moves " + move;
+//        SendCommand(command);
+//        SendCommand("go");
+//    }
+//}
+
+
 using UnityEngine;
 using System.Diagnostics;
 using System;
 using Debug = UnityEngine.Debug;
+using System.Threading.Tasks;
 
 public class StockfishAI : MonoBehaviour
 {
-    private Process stockfishProcess;
 
+    private Process stockfishProcess;
+    string aiMove = "";
+    string command = "position startpos move";
     private void Start()
     {
         StartStockfish();
@@ -15,7 +115,8 @@ public class StockfishAI : MonoBehaviour
         // You can send other necessary commands to initialize the engine here
     }
 
-    private void OnDestroy()
+
+    ~StockfishAI()
     {
         StopStockfish();
     }
@@ -25,76 +126,85 @@ public class StockfishAI : MonoBehaviour
         stockfishProcess = new Process();
         stockfishProcess.StartInfo.FileName = Application.dataPath + "/Stockfish/stockfish-windows-x86-64-avx2.exe";
         stockfishProcess.StartInfo.UseShellExecute = false;
+        stockfishProcess.StartInfo.CreateNoWindow = true;
         stockfishProcess.StartInfo.RedirectStandardInput = true;
         stockfishProcess.StartInfo.RedirectStandardOutput = true;
-        stockfishProcess.StartInfo.CreateNoWindow = true;
-        stockfishProcess.OutputDataReceived += OnOutputDataReceived;
+        // stockfishProcess.OutputDataReceived += OnOutputDataReceived;
         stockfishProcess.Start();
-        stockfishProcess.BeginOutputReadLine();
-        Debug.Log("Stockfish Running");
+        Debug.Log("Start");
     }
 
     private void StopStockfish()
     {
-        if (stockfishProcess != null && !stockfishProcess.HasExited)
-        {
-            stockfishProcess.StandardInput.WriteLine("quit");
-            stockfishProcess.WaitForExit();
-            stockfishProcess.Close();
-        }
+        stockfishProcess.Close();
     }
 
     private void SendCommand(string command)
     {
-        if (stockfishProcess != null && stockfishProcess.HasExited == false)
-        {
-            stockfishProcess.StandardInput.WriteLine(command);
-            stockfishProcess.StandardInput.Flush();
-        }
+        stockfishProcess.StandardInput.WriteLine(command);
+        // stockfishProcess.StandardInput.Flush();
     }
 
-    private void OnOutputDataReceived(object sender, DataReceivedEventArgs e)
+    public string BestMove(string playerMoveUCI)
     {
-        if (e.Data != null)
+        command += " " + playerMoveUCI;
+        Debug.Log("Player: " + command);
+        SendCommand(command);
+
+        String processString = "go movetime 1000";
+        SendCommand(processString);
+
+        do
         {
-            // Handle the output data received from Stockfish here
-            Debug.Log("Stockfish: " + e.Data);
-            ProcessStockfishResponse(e.Data);
+            aiMove = stockfishProcess.StandardOutput.ReadLine();
+            BestMove();
         }
+        while (BestMove() == "none");
+
+        // aiMove = ExtractAIMove(aiMove);
+        // Debug.Log($"Returning Move: {aiMove}");
+        MoveAI(playerMoveUCI);
+        return ExtractAIMove(aiMove);
     }
 
-    private void ProcessStockfishResponse(string response)
+    public Task<string> BestMoveAsync(string playerMoveUCI)
     {
-        // Implement logic to parse the response and handle different cases
-        // For example, you can extract the best move, score, etc.
+        return Task.Run(() => BestMove(playerMoveUCI));
+    }
 
-        // Example: Parsing the best move
-        if (response.StartsWith("bestmove"))
+    public string BestMove()
+    {
+
+        if (aiMove.StartsWith("bestmove"))
         {
-            string[] parts = response.Split(' ');
+            string[] parts = aiMove.Split(' ');
             if (parts.Length >= 2)
             {
-                string bestMove = parts[1];
-                Debug.Log("Best move: " + bestMove);
-
-                // Integrate the best move into your game logic here
-                // Update the chessboard state, move the pieces, etc.
+                return parts[1];
             }
         }
+
+        return "none";
     }
 
-    // Example method to send a move to Stockfish
-    public void SendMoveToStockfish(string move)
+    private string ExtractAIMove(string output)
     {
-        string command = "position startpos moves " + move;
-        SendCommand(command);
-        SendCommand("go");
+
+        if (output == "" || !output.StartsWith("bestmove"))
+            return "";
+
+        string[] parts = output.Split(' ');
+        return parts[1];
+
     }
 
-    //// Example usage in your game
-    //private void PlayMove()
-    //{
-    //    string playerMove = GetPlayerMove(); // Get the player's move
-    //    SendMoveToStockfish(playerMove);
-    //}
+    private void MoveAI(string playerMoveUCI)
+    {
+        command += " " + ExtractAIMove(aiMove);
+        Debug.Log("AI: " + command);
+        SendCommand(command);
+    }
+
+
+
 }

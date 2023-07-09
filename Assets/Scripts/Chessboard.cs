@@ -37,13 +37,17 @@ public class Chessboard : MonoBehaviour
     private List<Vector2Int[]> moveList = new List<Vector2Int[]>();
     private SpecialMove specialMove;
     private GameObject[,] _tiles;
-    private ChessPiece[,] chessPieces;
+    public ChessPiece[,] chessPieces;
     private List<ChessPiece> deadWhites = new List<ChessPiece>();
     private List<ChessPiece> deadBlacks = new List<ChessPiece>();
     private ChessPiece currentlyDragging;
     private List<Vector2Int> availableMoves = new List<Vector2Int>();
 
-    private bool isWhiteTurn;
+    public bool isWhiteTurn;
+    public int playerSide = 0;
+    public bool isBlackTurn;
+    public bool playersTurn = true;
+    public bool aiTurnInProcess = false;
     private Vector3 bounds;
 
     // ai integration section
@@ -62,7 +66,7 @@ public class Chessboard : MonoBehaviour
 
     private void Awake()
     {
-        isWhiteTurn = true;
+        playersTurn = true;
         playerCanMove = true;
         GenerateAllTiles(tileSize, TILE_COUNT_X, TILE_COUNT_Y);
         SpawnAllPieces();
@@ -73,10 +77,9 @@ public class Chessboard : MonoBehaviour
     void Update()
     {
 
-        if (!isWhiteTurn)
+        if (!playersTurn && !aiTurnInProcess)
         {
             aiScript.PlayAIMove(playerMoveUCI);
-            isWhiteTurn = !isWhiteTurn;
             return;
         }
 
@@ -132,7 +135,7 @@ public class Chessboard : MonoBehaviour
                 if (chessPieces[hitPosition.x, hitPosition.y] != null)
                 {
                     // Is it our turn?
-                    if ((chessPieces[hitPosition.x, hitPosition.y].team == 0 && isWhiteTurn) || (chessPieces[hitPosition.x, hitPosition.y].team == 1 && !isWhiteTurn))
+                    if ((chessPieces[hitPosition.x, hitPosition.y].team == 0 && playersTurn) || (chessPieces[hitPosition.x, hitPosition.y].team == 1 && !playersTurn))
                     {
                         currentlyDragging = chessPieces[hitPosition.x, hitPosition.y];
 
@@ -152,7 +155,7 @@ public class Chessboard : MonoBehaviour
                 playerMoveUCI = "";
                 Vector2Int previousPosition = new Vector2Int(currentlyDragging.currentX, currentlyDragging.currentY);
 
-                bool validMove = MoveTo(currentlyDragging, hitPosition.x, hitPosition.y);
+                bool validMove = MoveTo(currentlyDragging, hitPosition.x, hitPosition.y, false);
                 if (!validMove)
                 {
                     currentlyDragging.SetPosition(GetTileCentre(previousPosition.x, previousPosition.y));
@@ -547,10 +550,10 @@ public class Chessboard : MonoBehaviour
 
         return false;
     }
-    private bool MoveTo(ChessPiece cp, int x, int y)
+    public bool MoveTo(ChessPiece cp, int x, int y, bool ai)
     {
 
-        if (!ContainsValidMove(ref availableMoves, new Vector2Int(x, y)))
+        if (!ContainsValidMove(ref availableMoves, new Vector2Int(x, y)) && !ai)
             return false;
 
         Vector2Int previousPosition = new Vector2Int(cp.currentX, cp.currentY);
@@ -595,7 +598,7 @@ public class Chessboard : MonoBehaviour
 
         PositionSinglePiece(x, y);
 
-        isWhiteTurn = !isWhiteTurn;
+        playersTurn = !playersTurn;
         moveList.Add(new Vector2Int[] { previousPosition, new Vector2Int(x, y) });
         ProcessSpecialMove();
         if (CheckForCheckmate())
@@ -691,7 +694,7 @@ public class Chessboard : MonoBehaviour
         //Spawining Again
         SpawnAllPieces();
         PositionAllPieces();
-        isWhiteTurn = true;
+        playersTurn = true;
 
     }
     public void onExitButton()
@@ -711,6 +714,16 @@ public class Chessboard : MonoBehaviour
 
     public void AllowPlayerToMove() => playerCanMove = true;
     public void RestrictPlayerToMove() => playerCanMove = false;
-    
 
+    public void ReverseRoles()
+    {
+
+    }
+
+
+
+    public void UpdateUI()
+    {
+
+    }
 }
