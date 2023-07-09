@@ -29,6 +29,8 @@ public class Chessboard : MonoBehaviour
 
     // Logic Section
 
+    [Header("Logic References")]
+    [SerializeField] private AI aiScript;
     private const int TILE_COUNT_X = 8;
     private const int TILE_COUNT_Y = 8;
 
@@ -44,6 +46,12 @@ public class Chessboard : MonoBehaviour
     private bool isWhiteTurn;
     private Vector3 bounds;
 
+    // ai integration section
+    private bool playerCanMove = false;
+
+    // uci section
+    char[] rowUCI = { 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h' };
+    private string playerMoveUCI = "";
 
     // raycast section
     private Camera _currentCamera;
@@ -55,6 +63,7 @@ public class Chessboard : MonoBehaviour
     private void Awake()
     {
         isWhiteTurn = true;
+        playerCanMove = true;
         GenerateAllTiles(tileSize, TILE_COUNT_X, TILE_COUNT_Y);
         SpawnAllPieces();
         PositionAllPieces();
@@ -63,6 +72,17 @@ public class Chessboard : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+
+        if (!isWhiteTurn)
+        {
+            aiScript.PlayAIMove(playerMoveUCI);
+            isWhiteTurn = !isWhiteTurn;
+            return;
+        }
+
+        if (!playerCanMove)
+            return;
+
         if (!_currentCamera)
         {
             _currentCamera = Camera.main;
@@ -76,7 +96,7 @@ public class Chessboard : MonoBehaviour
         {
             // Get the indexes of the tile i've hit
             Vector2Int hitPosition = LookUpTileIndex(info.transform.gameObject);
-            Debug.Log($"Tile: ({hitPosition.x}, {hitPosition.y})");
+            //Debug.Log($"Tile: ({hitPosition.x}, {hitPosition.y})");
 
             // If we're hovering a tile after not hovering any tiles
             if (_currentHover == -Vector2Int.one)
@@ -129,12 +149,19 @@ public class Chessboard : MonoBehaviour
             // on mouse button release
             if (currentlyDragging != null && Input.GetMouseButtonUp(0))
             {
+                playerMoveUCI = "";
                 Vector2Int previousPosition = new Vector2Int(currentlyDragging.currentX, currentlyDragging.currentY);
 
                 bool validMove = MoveTo(currentlyDragging, hitPosition.x, hitPosition.y);
                 if (!validMove)
+                {
                     currentlyDragging.SetPosition(GetTileCentre(previousPosition.x, previousPosition.y));
+                    playerMoveUCI = "";
+                }
 
+                playerMoveUCI = "";
+                playerMoveUCI = playerMoveUCI + $"{rowUCI[previousPosition.x]}{previousPosition.y + 1}{rowUCI[hitPosition.x]}{hitPosition.y + 1}";
+                Debug.Log(playerMoveUCI);
                 currentlyDragging = null;
                 RemoveHighlightTiles();
 
@@ -681,4 +708,9 @@ public class Chessboard : MonoBehaviour
         // for invalid return path
         return -Vector2Int.one;
     }
+
+    public void AllowPlayerToMove() => playerCanMove = true;
+    public void RestrictPlayerToMove() => playerCanMove = false;
+    
+
 }

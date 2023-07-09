@@ -46,8 +46,13 @@ public class ChessPiece : MonoBehaviour
     {
         desiredPosition = position;
 
+        if (type == ChessPieceType.Pawn)
+            desiredPosition += new Vector3(0, 0.2f, 0);
+
         if (force)
             transform.position = desiredPosition;
+
+
     }
 
     public virtual void SetScale(Vector3 scale, bool force = false)
